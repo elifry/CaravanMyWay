@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+	<name>Caravan My Way</name>
+	<author>lucid_bound</author>
+	<supportedVersions>
+		<li>1.4</li>
+		<li>1.5</li>
+	</supportedVersions>
+	<packageId>lucid_bound.CaravanMyWay</packageId>
+	<description>Enhance your caravanning experience with precise control over item distribution!
+
+Ever been frustrated when you really wanted your pawns to carry certain items but they get loaded into the pack animal instead? Or ever add pawns to the caravan just for loading items only for them to carry items in their own inventory, defeating the purpose? This mod lets you decide exactly who carries what after you have already started forming a caravan.
+
+Features:
+- Pick which pawn carries each item
+- See current and max carry weights (45/130)
+- Smart UI greys out pawns who are full or can't carry more
+- Works with vanilla stack splitting
+- Safe and stable - no item duplication or loss
+
+Perfect for players who want more control over their caravan organization!</description>
+	<modDependencies>
+		<li>
+			<packageId>ludeon.rimworld</packageId>
+			<displayName>Core</displayName>
+		</li>
+	</modDependencies>
+	<loadAfter>
+		<li>ludeon.rimworld</li>
+	</loadAfter>
+</ModMetaData>
