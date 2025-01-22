@@ -79,7 +79,7 @@ namespace CaravanMyWay
 
         [HarmonyPatch(typeof(FloatMenuMakerMap))]
         [HarmonyPatch("AddHumanlikeOrders")]
-        public static class FloatMenuMakerMap_AddHumanlikeOrders_Patch
+        public static class FloatMenuMakerMap_AddHumanlikeOrders_CaravanLoading_Patch
         {
             public static void Postfix(Vector3 clickPos, Pawn pawn, List<FloatMenuOption> opts)
             {
