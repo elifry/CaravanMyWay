@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
 	<name>Caravan My Way</name>
-	<author>lucid_bound</author>
+	<author>LucidBound</author>
 	<supportedVersions>
 		<li>1.4</li>
 		<li>1.5</li>
 	</supportedVersions>
-	<packageId>lucid_bound.CaravanMyWay</packageId>
+	<packageId>LucidBound.CaravanMyWay</packageId>
 	<description>Enhance your caravanning experience with precise control over item distribution!
 
 Ever been frustrated when you really wanted your pawns to carry certain items but they get loaded into the pack animal instead? Or ever add pawns to the caravan just for loading items only for them to carry items in their own inventory, defeating the purpose? This mod lets you decide exactly who carries what after you have already started forming a caravan.
