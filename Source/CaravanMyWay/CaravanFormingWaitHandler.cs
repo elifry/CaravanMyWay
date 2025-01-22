@@ -47,6 +47,18 @@ namespace CaravanMyWay
 
     // Patch to prevent auto-departure when waiting is enabled
     [HarmonyPatch(typeof(LordToil_PrepareCaravan_GatherItems))]
+    [HarmonyPatch("Notify_ReachedDutyLocation")]
+    public static class LordToil_PrepareCaravan_GatherItems_Notify_ReachedDutyLocation_Patch
+    {
+        public static bool Prefix()
+        {
+            // If waiting is enabled, prevent the caravan from proceeding to exit
+            return !CaravanFormingWaitHandler.WaitToSend;
+        }
+    }
+
+    // Add a patch for the manual send command
+    [HarmonyPatch(typeof(LordToil_PrepareCaravan_GatherItems))]
     [HarmonyPatch("ShouldBeCalledOff")]
     public static class LordToil_PrepareCaravan_GatherItems_ShouldBeCalledOff_Patch
     {
