@@ -10,7 +10,8 @@ using System.Collections.Generic;
 namespace CaravanMyWay.Patches
 {
     // Wait handler patches
-    [HarmonyPatch(typeof(Pawn), "GetGizmos")]
+    [HarmonyPatch(typeof(Pawn))]
+    [HarmonyPatch("GetGizmos")]
     public static class Pawn_GetGizmos_Patch
     {
         public static void Postfix(ref IEnumerable<Gizmo> __result, Pawn __instance)
@@ -38,36 +39,38 @@ namespace CaravanMyWay.Patches
         }
     }
 
-    [HarmonyPatch(typeof(LordToil_PrepareCaravan_GatherItems), "LordToilTick")]
-    public static class LordToil_PrepareCaravan_GatherItems_LordToilTick_Patch
+    [HarmonyPatch(typeof(LordToil_PrepareCaravan_GatherItems))]
+    [HarmonyPatch("ShouldBeCalledOff")]
+    public static class LordToil_PrepareCaravan_GatherItems_ShouldBeCalledOff_Patch
     {
-        public static bool Prefix(LordToil_PrepareCaravan_GatherItems __instance)
+        public static void Postfix(ref bool __result)
         {
             if (!CaravanMyWayMod.Settings.enableWaitToSend)
-                return true;
-            return !CaravanHandler.WaitToSend;
+                return;
+
+            if (CaravanHandler.WaitToSend)
+            {
+                __result = false;
+            }
         }
     }
 
-    // [HarmonyPatch(typeof(Transition))]
-    // [HarmonyPatch("ShouldTriggerNow")]
-    // public static class Transition_ShouldTriggerNow_Patch
-    // {
-    //     public static bool Prefix(Transition __instance, ref bool __result)
-    //     {
-    //         ModLogger.Debug("Processing Transition_ShouldTriggerNow");
-    //         if (!CaravanMyWayMod.Settings.enableWaitToSend)
-    //             return true;
+    [HarmonyPatch(typeof(Transition))]
+    [HarmonyPatch("ShouldTriggerNow")]
+    public static class Transition_ShouldTriggerNow_Patch
+    {
+        public static void Postfix(Transition __instance, ref bool __result)
+        {
+            if (!CaravanMyWayMod.Settings.enableWaitToSend)
+                return;
             
-    //         if (__instance?.sources != null && 
-    //             __instance.sources.Count > 0 && 
-    //             __instance.sources[0]?.lord?.LordJob is LordJob_FormAndSendCaravan && 
-    //             CaravanHandler.WaitToSend)
-    //         {
-    //             __result = false;
-    //             return false;
-    //         }
-    //         return true;
-    //     }
-    // }
+            if (__instance?.sources != null && 
+                __instance.sources.Count > 0 && 
+                __instance.sources[0]?.lord?.LordJob is LordJob_FormAndSendCaravan && 
+                CaravanHandler.WaitToSend)
+            {
+                __result = false;
+            }
+        }
+    }
 }
