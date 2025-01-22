@@ -51,7 +51,7 @@ namespace CaravanMyWay
             }));
 
             // Add "Load all" option
-            opts.Add(new FloatMenuOption($"Load {thing.Label} x{thing.stackCount} (all) into caravan", delegate
+            opts.Add(new FloatMenuOption($"Load {thing.Label} (all) into caravan", delegate
             {
                 ShowCarrierOptions(pawn, thing, lord, thing.stackCount, itemMass);
             }));
