@@ -1,4 +1,5 @@
 ﻿using Verse;
+using HarmonyLib;
 
 namespace CaravanMyWay
 {
@@ -6,7 +7,9 @@ namespace CaravanMyWay
     {
         public CaravanMyWayMod(ModContentPack content) : base(content)
         {
-            Log.Message("[CaravanMyWay] Initialized!");
+            var harmony = new Harmony("LucidBound.CaravanMyWay");
+            harmony.PatchAll();
+            Log.Message("[CaravanMyWay] Initialized.");
         }
     }
 }

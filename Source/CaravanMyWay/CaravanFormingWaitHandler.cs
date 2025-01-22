@@ -1,6 +1,7 @@
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
+using Verse.AI.Group;
 using UnityEngine;
 using HarmonyLib;
 using System.Collections.Generic;
@@ -45,29 +46,36 @@ namespace CaravanMyWay
         }
     }
 
-    // Patch to prevent auto-departure when waiting is enabled
+    // Patch the transition to exit phase
     [HarmonyPatch(typeof(LordToil_PrepareCaravan_GatherItems))]
-    [HarmonyPatch("Notify_ReachedDutyLocation")]
-    public static class LordToil_PrepareCaravan_GatherItems_Notify_ReachedDutyLocation_Patch
+    [HarmonyPatch("LordToilTick")]
+    public static class LordToil_PrepareCaravan_GatherItems_LordToilTick_Patch
     {
-        public static bool Prefix()
-        {
-            // If waiting is enabled, prevent the caravan from proceeding to exit
-            return !CaravanFormingWaitHandler.WaitToSend;
-        }
-    }
-
-    // Add a patch for the manual send command
-    [HarmonyPatch(typeof(LordToil_PrepareCaravan_GatherItems))]
-    [HarmonyPatch("ShouldBeCalledOff")]
-    public static class LordToil_PrepareCaravan_GatherItems_ShouldBeCalledOff_Patch
-    {
-        public static void Postfix(ref bool __result)
+        public static bool Prefix(LordToil_PrepareCaravan_GatherItems __instance)
         {
             if (CaravanFormingWaitHandler.WaitToSend)
             {
-                __result = false;
+                // Keep them in the gathering phase
+                return false;
             }
+            return true;
+        }
+    }
+
+    // Patch all transitions in caravan forming
+    [HarmonyPatch(typeof(Transition))]
+    [HarmonyPatch("ShouldTriggerNow")]
+    public static class Transition_ShouldTriggerNow_Patch
+    {
+        public static bool Prefix(Transition __instance, ref bool __result)
+        {
+            // Check if this transition is part of a caravan forming lord
+            if (__instance.sources[0].lord?.LordJob is LordJob_FormAndSendCaravan && CaravanFormingWaitHandler.WaitToSend)
+            {
+                __result = false;
+                return false;
+            }
+            return true;
         }
     }
 }
