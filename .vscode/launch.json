@@ -3,12 +3,11 @@
   "configurations": [
     {
       "name": "Build and Launch RimWorld",
-      "type": "shell",
+      "type": "node",
       "request": "launch",
-      "preLaunchTask": "build",
-      "osx": {
-        "command": "open -a RimWorldMac '/Users/elijahfry/Library/Application Support/Steam/steamapps/common/RimWorld/RimWorldMac.app'"
-      }
+      "program": "${workspaceFolder}/scripts/launch-game.sh",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "/bin/bash"
     }
   ]
 }
