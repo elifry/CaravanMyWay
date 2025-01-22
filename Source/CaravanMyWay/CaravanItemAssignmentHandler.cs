@@ -82,12 +82,12 @@ namespace CaravanMyWay
                                 List<FloatMenuOption> carrierOptions = new List<FloatMenuOption>();
                                 foreach (var carrier in lord.ownedPawns.Where(p => MassUtility.Capacity(p) > 0))
                                 {
+                                    float availableCapacity = GetAvailableCapacity(carrier);
                                     float currentMass = MassUtility.GearAndInventoryMass(carrier);
                                     float maxMass = MassUtility.Capacity(carrier);
-                                    float remainingCapacity = maxMass - currentMass;
                                     string optionLabel = $"{carrier.Label} ({currentMass:F1}/{maxMass:F1} kg)";
 
-                                    if (remainingCapacity >= itemMass * amount)
+                                    if (availableCapacity >= itemMass * amount)
                                     {
                                         carrierOptions.Add(new FloatMenuOption(optionLabel, delegate
                                         {
@@ -96,7 +96,7 @@ namespace CaravanMyWay
                                     }
                                     else
                                     {
-                                        carrierOptions.Add(new FloatMenuOption(optionLabel + " - Too heavy", null)
+                                        carrierOptions.Add(new FloatMenuOption(optionLabel + " - Too heavy (including pending loads)", null)
                                         {
                                             Disabled = true
                                         });
@@ -115,12 +115,12 @@ namespace CaravanMyWay
                     List<FloatMenuOption> carrierOptions = new List<FloatMenuOption>();
                     foreach (var carrier in lord.ownedPawns.Where(p => MassUtility.Capacity(p) > 0))
                     {
+                        float availableCapacity = GetAvailableCapacity(carrier);
                         float currentMass = MassUtility.GearAndInventoryMass(carrier);
                         float maxMass = MassUtility.Capacity(carrier);
-                        float remainingCapacity = maxMass - currentMass;
                         string optionLabel = $"{carrier.Label} ({currentMass:F1}/{maxMass:F1} kg)";
 
-                        if (remainingCapacity >= itemMass * thing.stackCount)
+                        if (availableCapacity >= itemMass * thing.stackCount)
                         {
                             carrierOptions.Add(new FloatMenuOption(optionLabel, delegate
                             {
@@ -129,7 +129,7 @@ namespace CaravanMyWay
                         }
                         else
                         {
-                            carrierOptions.Add(new FloatMenuOption(optionLabel + " - Too heavy", null)
+                            carrierOptions.Add(new FloatMenuOption(optionLabel + " - Too heavy (including pending loads)", null)
                             {
                                 Disabled = true
                             });
@@ -147,12 +147,12 @@ namespace CaravanMyWay
                     List<FloatMenuOption> carrierOptions = new List<FloatMenuOption>();
                     foreach (var carrier in lord.ownedPawns.Where(p => MassUtility.Capacity(p) > 0))
                     {
+                        float availableCapacity = GetAvailableCapacity(carrier);
                         float currentMass = MassUtility.GearAndInventoryMass(carrier);
                         float maxMass = MassUtility.Capacity(carrier);
-                        float remainingCapacity = maxMass - currentMass;
                         string optionLabel = $"{carrier.Label} ({currentMass:F1}/{maxMass:F1} kg)";
 
-                        if (remainingCapacity >= itemMass)
+                        if (availableCapacity >= itemMass)
                         {
                             carrierOptions.Add(new FloatMenuOption(optionLabel, delegate
                             {
@@ -161,7 +161,7 @@ namespace CaravanMyWay
                         }
                         else
                         {
-                            carrierOptions.Add(new FloatMenuOption(optionLabel + " - Too heavy", null)
+                            carrierOptions.Add(new FloatMenuOption(optionLabel + " - Too heavy (including pending loads)", null)
                             {
                                 Disabled = true
                             });
@@ -204,6 +204,47 @@ namespace CaravanMyWay
             {
                 Messages.Message($"{pawn.Label} cannot reach the items", MessageTypeDefOf.RejectInput);
             }
+        }
+
+        private static float GetPendingMass(Pawn carrier)
+        {
+            float pendingMass = 0f;
+            
+            // Check all jobs in the queue
+            if (carrier.jobs?.jobQueue != null)
+            {
+                foreach (var jobQueueEntry in carrier.jobs.jobQueue)
+                {
+                    var job = jobQueueEntry.job;
+                    // Check for inventory loading jobs
+                    if ((job.def == JobDefOf.TakeInventory || job.def == JobDefOf.HaulToContainer) && job.targetA.Thing != null)
+                    {
+                        Thing thing = job.targetA.Thing;
+                        pendingMass += thing.def.BaseMass * job.count;
+                    }
+                }
+            }
+
+            // Check current job if it's a loading job
+            if (carrier.CurJob != null)
+            {
+                var job = carrier.CurJob;
+                if ((job.def == JobDefOf.TakeInventory || job.def == JobDefOf.HaulToContainer) && job.targetA.Thing != null)
+                {
+                    Thing thing = job.targetA.Thing;
+                    pendingMass += thing.def.BaseMass * job.count;
+                }
+            }
+
+            return pendingMass;
+        }
+
+        private static float GetAvailableCapacity(Pawn carrier)
+        {
+            float currentMass = MassUtility.GearAndInventoryMass(carrier);
+            float pendingMass = GetPendingMass(carrier);
+            float maxMass = MassUtility.Capacity(carrier);
+            return maxMass - (currentMass + pendingMass);
         }
     }
 }

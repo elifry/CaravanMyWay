@@ -34,8 +34,8 @@ namespace CaravanMyWay
             var waitGizmo = new Command_Toggle
             {
                 defaultLabel = "Wait to send caravan",
-                defaultDesc = "If enabled, the caravan will wait for to send caravan instead of departing automatically.",
-                icon = ContentFinder<Texture2D>.Get("UI/Commands/Wait", true),
+                defaultDesc = "If enabled, the caravan will wait for manual send command instead of departing automatically.",
+                icon = ContentFinder<Texture2D>.Get("UI/Commands/Halt", true),
                 isActive = () => CaravanFormingWaitHandler.WaitToSend,
                 toggleAction = () => CaravanFormingWaitHandler.WaitToSend = !CaravanFormingWaitHandler.WaitToSend
             };
