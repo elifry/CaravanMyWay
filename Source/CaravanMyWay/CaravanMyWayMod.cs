@@ -6,7 +6,7 @@ namespace CaravanMyWay
     {
         public CaravanMyWayMod(ModContentPack content) : base(content)
         {
-            Log.Message("CaravanMyWay initialized!");
+            Log.Message("[CaravanMyWay] Initialized!");
         }
     }
 }
