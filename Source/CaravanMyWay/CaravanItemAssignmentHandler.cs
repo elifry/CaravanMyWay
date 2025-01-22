@@ -110,7 +110,7 @@ namespace CaravanMyWay
                 }));
 
                 // Add "Load all" option
-                opts.Add(new FloatMenuOption($"Load all {thing.Label} into...", delegate
+                opts.Add(new FloatMenuOption($"Load all {thing.Label} into caravan", delegate
                 {
                     List<FloatMenuOption> carrierOptions = new List<FloatMenuOption>();
                     foreach (var carrier in lord.ownedPawns.Where(p => MassUtility.Capacity(p) > 0))
